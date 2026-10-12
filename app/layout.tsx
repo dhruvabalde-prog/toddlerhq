@@ -1,31 +1,11 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import './globals.css';
+import { ToddlerHQProvider } from '@/lib/store';
 
 export const metadata: Metadata = {
-  title: "Paisaan - DealFlow & Gigs Engine",
-  description: "Next.js DealFlow & Fast Pitch Engine for Vibe Coders shipping 0-to-1 MVPs.",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Paisaan",
-  },
-  icons: {
-    icon: "/icon.svg",
-    apple: "/apple-icon",
-  },
+  title: 'ToddlerHQ — Preschool Operations, Project Management & Delegation OS',
+  description:
+    'Timeline-agnostic Project Management, Operations Management, and Downstairs Team Delegation Operating System for preschools and national preschool franchise brands.',
 };
 
 export default function RootLayout({
@@ -34,13 +14,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
-      suppressHydrationWarning
-    >
-      <body className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased transition-colors duration-200">
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="en">
+      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans selection:bg-amber-100 selection:text-amber-900">
+        <ToddlerHQProvider>{children}</ToddlerHQProvider>
       </body>
     </html>
   );
