@@ -46,38 +46,41 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+        {/* Grab bar on mobile */}
+        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-2 sm:hidden" />
+
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-rose-500 text-white shadow-sm">
               <MapPin className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-sm sm:text-base font-black text-slate-900">
                 Location-Aware Context Engine
               </h3>
-              <p className="text-xs text-slate-500">
-                Auto-configures local preschool vendor standards, logistics lead times, and hiring pools based on Indian metropolitan zones.
+              <p className="text-[11px] sm:text-xs text-slate-500">
+                Auto-configures local vendors, logistics lead times, and hiring pools.
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Header */}
-        <div className="flex items-center border-b border-slate-200 px-6 bg-white overflow-x-auto">
+        <div className="flex items-center border-b border-slate-200 px-4 sm:px-6 bg-white overflow-x-auto">
           {[
-            { id: 'location', label: '1. City & Locality Setup', icon: MapPin },
-            { id: 'vendors', label: '2. Recommended Vendor Matrix', icon: Package },
-            { id: 'hiring', label: '3. Local ECCE Hiring Pools', icon: Users },
+            { id: 'location', label: '1. City & Locality', icon: MapPin },
+            { id: 'vendors', label: '2. Recommended Vendors', icon: Package },
+            { id: 'hiring', label: '3. ECCE Hiring Pools', icon: Users },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -100,10 +103,10 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {/* TAB 1: City & Locality */}
           {activeTab === 'location' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* City selector pills */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
@@ -135,11 +138,11 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
 
               {/* Locality & Pincode */}
               {currentCityHub && (
-                <div className="space-y-3 pt-2">
+                <div className="space-y-2 pt-1">
                   <label className="block text-xs font-bold text-slate-700 uppercase">
                     Select Preschool Micro-Market (Locality &amp; Pincode)
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {currentCityHub.localities.map((loc) => {
                       const isSelected = selectedLocality === loc.locality;
 
@@ -173,16 +176,16 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
               )}
 
               {/* Save CTA */}
-              <div className="pt-4 border-t border-slate-100 flex justify-end gap-2">
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-2 pb-safe">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800"
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-800"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleApplyLocation}
-                  className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md"
+                  className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-md transition-transform active:scale-95"
                 >
                   Apply {selectedLocality}, {selectedCity}
                 </button>
@@ -193,11 +196,11 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
           {/* TAB 2: Recommended Vendors */}
           {activeTab === 'vendors' && (
             <div className="space-y-4">
-              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600">
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 font-medium">
                 Auto-populated material specifications required for preschool compliance in <strong>{campus.city}</strong>:
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 {RECOMMENDED_VENDOR_CATEGORIES.map((cat) => (
                   <div
                     key={cat.category}
@@ -241,7 +244,7 @@ export const LocationSetupModal: React.FC<LocationSetupModalProps> = ({ isOpen, 
           {/* TAB 3: Local Hiring Pools */}
           {activeTab === 'hiring' && (
             <div className="space-y-4">
-              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600">
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 font-medium">
                 Staff compensation benchmarks and background check mandates for <strong>{campus.city}</strong>:
               </div>
 

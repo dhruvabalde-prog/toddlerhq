@@ -10,6 +10,8 @@ import { AdmissionsView } from '@/components/views/AdmissionsView';
 import { CopilotModal } from '@/components/copilot/CopilotModal';
 import { WorkspaceDrawer } from '@/components/google/WorkspaceDrawer';
 import { LocationSetupModal } from '@/components/modals/LocationSetupModal';
+import { BrandSelectorModal } from '@/components/modals/BrandSelectorModal';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import {
   Wrench,
   GraduationCap,
@@ -38,6 +40,7 @@ export default function ToddlerHQPage() {
   const [copilotTab, setCopilotTab] = useState('parent_reply');
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
 
   const handleOpenCopilot = (tab = 'parent_reply') => {
     setCopilotTab(tab);
@@ -56,6 +59,8 @@ export default function ToddlerHQPage() {
       <Navbar
         onOpenCopilot={handleOpenCopilot}
         onOpenWorkspace={() => setIsWorkspaceOpen(true)}
+        onOpenLocation={() => setIsLocationModalOpen(true)}
+        onOpenBrands={() => setIsBrandModalOpen(true)}
       />
 
       {/* Mode & Location Context Sub-bar */}
@@ -117,7 +122,7 @@ export default function ToddlerHQPage() {
       </section>
 
       {/* Main Content Area: Renders the Role-Tailored Dynamic UI */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
         {currentUser.role === 'founder' && (
           <FounderView onOpenCopilot={handleOpenCopilot} />
         )}
@@ -136,7 +141,7 @@ export default function ToddlerHQPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-white py-6">
+      <footer className="mt-auto border-t border-slate-200 bg-white py-6 pb-24 md:pb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-slate-900">ToddlerHQ OS</span>
@@ -172,6 +177,14 @@ export default function ToddlerHQPage() {
         </div>
       </footer>
 
+      {/* Mobile-First Sticky Bottom Thumb Dock */}
+      <MobileBottomNav
+        onOpenCopilot={handleOpenCopilot}
+        onOpenWorkspace={() => setIsWorkspaceOpen(true)}
+        onOpenLocation={() => setIsLocationModalOpen(true)}
+        onOpenBrands={() => setIsBrandModalOpen(true)}
+      />
+
       {/* Global Modals & Drawers */}
       <CopilotModal
         isOpen={isCopilotOpen}
@@ -187,6 +200,11 @@ export default function ToddlerHQPage() {
       <LocationSetupModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}
+      />
+
+      <BrandSelectorModal
+        isOpen={isBrandModalOpen}
+        onClose={() => setIsBrandModalOpen(false)}
       />
     </div>
   );

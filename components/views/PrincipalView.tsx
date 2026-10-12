@@ -26,7 +26,7 @@ const KANBAN_COLUMNS: { id: TaskStatus; label: string; badgeColor: string }[] = 
   { id: 'backlog', label: 'Backlog', badgeColor: 'bg-slate-100 text-slate-800' },
   { id: 'todo', label: 'To Do', badgeColor: 'bg-blue-100 text-blue-800' },
   { id: 'in_progress', label: 'In Progress', badgeColor: 'bg-amber-100 text-amber-800' },
-  { id: 'under_review', label: 'Under Review (Proof Required)', badgeColor: 'bg-purple-100 text-purple-800' },
+  { id: 'under_review', label: 'Under Review', badgeColor: 'bg-purple-100 text-purple-800' },
   { id: 'completed', label: 'Completed', badgeColor: 'bg-emerald-100 text-emerald-800' },
   { id: 'verified', label: 'Verified & Closed', badgeColor: 'bg-emerald-200 text-emerald-900' },
 ];
@@ -44,6 +44,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
   } = useToddlerHQ();
 
   const [activeTab, setActiveTab] = useState<'kanban' | 'safety_gatekeepers' | 'vendors' | 'team'>('kanban');
+  const [activeMobileColumn, setActiveMobileColumn] = useState<TaskStatus | 'all'>('all');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [selectedProofTask, setSelectedProofTask] = useState<Task | null>(null);
   const [taskError, setTaskError] = useState<string | null>(null);
@@ -68,17 +69,17 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-5 sm:space-y-6 pb-16 animate-in fade-in duration-300">
       {/* Principal Header Bar */}
-      <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-100 text-blue-900 border border-blue-200">
               Operational Hub
             </span>
-            <span className="text-xs text-slate-500 font-semibold">Center Head / Principal Console</span>
+            <span className="text-xs text-slate-500 font-bold">Principal Console</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Campus Operations &amp; Safety Compliance
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -86,7 +87,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             onClick={() => onOpenCopilot('vernacular_sop')}
             className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-bold text-xs border border-indigo-200 flex items-center gap-1.5 transition-colors"
@@ -97,39 +98,39 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
           <button
             onClick={() => setIsTaskModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>New Operational Task</span>
+            <span>New Milestone Task</span>
           </button>
         </div>
       </div>
 
-      {/* Error Alert Banner if any State Machine check triggers */}
+      {/* Error Alert Banner */}
       {taskError && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold flex items-center justify-between gap-3 animate-in fade-in">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-bold flex items-center justify-between gap-3 animate-in fade-in">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{taskError}</span>
           </div>
-          <button onClick={() => setTaskError(null)} className="text-rose-500 font-bold hover:text-rose-800">
-            Dismiss
+          <button onClick={() => setTaskError(null)} className="text-rose-500 font-black hover:text-rose-800 p-1">
+            ✕
           </button>
         </div>
       )}
 
       {/* View Switcher Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab('kanban')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition-all shrink-0 ${
             activeTab === 'kanban'
               ? 'bg-slate-900 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Kanban className="w-3.5 h-3.5" />
-          <span>Departmental Kanban Board</span>
+          <span>Departmental Kanban</span>
           <span className="text-[10px] bg-slate-800 px-1.5 py-0.2 rounded-md text-slate-300">
             {tasks.length}
           </span>
@@ -137,7 +138,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
         <button
           onClick={() => setActiveTab('safety_gatekeepers')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition-all shrink-0 ${
             activeTab === 'safety_gatekeepers'
               ? 'bg-rose-600 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
@@ -147,21 +148,21 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
           <span>Safety Gatekeepers</span>
           {unverifiedSafetyTasks.length > 0 && (
             <span className="text-[10px] bg-rose-500 text-white px-1.5 py-0.2 rounded-md font-black animate-pulse">
-              {unverifiedSafetyTasks.length} ALERTS
+              {unverifiedSafetyTasks.length}
             </span>
           )}
         </button>
 
         <button
           onClick={() => setActiveTab('vendors')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition-all shrink-0 ${
             activeTab === 'vendors'
               ? 'bg-slate-900 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Package className="w-3.5 h-3.5" />
-          <span>Vendor POs &amp; Specs</span>
+          <span>Vendor POs</span>
           <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-md font-bold">
             {vendorOrders.length}
           </span>
@@ -169,24 +170,55 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
         <button
           onClick={() => setActiveTab('team')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-black transition-all shrink-0 ${
             activeTab === 'team'
               ? 'bg-slate-900 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Users className="w-3.5 h-3.5" />
-          <span>Staff Shifts &amp; Hierarchy</span>
+          <span>Staff Shifts</span>
           <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-md font-bold">
             {staffList.length}
           </span>
         </button>
       </div>
 
+      {/* Mobile Kanban Column Selector Pills */}
+      {activeTab === 'kanban' && (
+        <div className="flex md:hidden items-center gap-1 overflow-x-auto pb-1">
+          <button
+            onClick={() => setActiveMobileColumn('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-colors ${
+              activeMobileColumn === 'all'
+                ? 'bg-slate-900 text-white'
+                : 'bg-white text-slate-600 border border-slate-200'
+            }`}
+          >
+            All Columns
+          </button>
+          {KANBAN_COLUMNS.map((col) => (
+            <button
+              key={col.id}
+              onClick={() => setActiveMobileColumn(col.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-colors ${
+                activeMobileColumn === col.id
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-slate-600 border border-slate-200'
+              }`}
+            >
+              {col.label} ({tasks.filter((t) => t.status === col.id).length})
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* TAB 1: Departmental Kanban Board */}
       {activeTab === 'kanban' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto pb-6">
           {KANBAN_COLUMNS.map((col) => {
+            if (activeMobileColumn !== 'all' && activeMobileColumn !== col.id) return null;
+
             const colTasks = tasks.filter((t) => t.status === col.id);
 
             return (
@@ -196,10 +228,10 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
               >
                 {/* Column Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                  <span className="text-xs font-extrabold text-slate-900 truncate">
+                  <span className="text-xs font-black text-slate-900 truncate">
                     {col.label}
                   </span>
-                  <span className="text-xs font-bold bg-white text-slate-700 px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
+                  <span className="text-xs font-black bg-white text-slate-700 px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
                     {colTasks.length}
                   </span>
                 </div>
@@ -215,7 +247,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                         className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-2xs hover:shadow-md transition-shadow space-y-2.5"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
                             {task.department}
                           </span>
                           <span
@@ -231,12 +263,12 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                           </span>
                         </div>
 
-                        <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                        <h4 className="text-xs font-black text-slate-900 leading-snug">
                           {task.title}
                         </h4>
 
                         {/* Assignee Badge */}
-                        <div className="flex items-center gap-1.5 pt-1 text-[11px] text-slate-500">
+                        <div className="flex items-center gap-1.5 pt-1 text-[11px] text-slate-600">
                           <div className="w-4 h-4 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[9px]">
                             {assignee ? assignee.full_name.charAt(0) : '?'}
                           </div>
@@ -246,21 +278,21 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                         {/* Proof Indicator */}
                         {task.requires_proof && (
                           <div className="pt-1 flex items-center justify-between text-[10px]">
-                            <span className="flex items-center gap-1 text-amber-700 font-semibold">
-                              <ShieldCheck className="w-3 h-3 text-amber-600" />
+                            <span className="flex items-center gap-1 text-amber-700 font-bold">
+                              <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
                               Proof Required
                             </span>
                             {task.proof_image_url ? (
                               <button
                                 onClick={() => setSelectedProofTask(task)}
-                                className="text-emerald-700 font-bold hover:underline"
+                                className="text-emerald-700 font-black hover:underline"
                               >
                                 View Proof ✓
                               </button>
                             ) : (
                               <button
                                 onClick={() => setSelectedProofTask(task)}
-                                className="text-rose-600 font-bold hover:underline"
+                                className="text-rose-600 font-black hover:underline"
                               >
                                 Attach +
                               </button>
@@ -268,12 +300,12 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                           </div>
                         )}
 
-                        {/* Action buttons based on status */}
+                        {/* Action buttons */}
                         <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
                           {task.status !== 'verified' && (
                             <button
                               onClick={() => handleAdvanceStatus(task)}
-                              className="text-[11px] font-bold text-amber-600 hover:text-amber-800 flex items-center gap-0.5"
+                              className="text-[11px] font-black text-amber-600 hover:text-amber-800 flex items-center gap-0.5"
                             >
                               <span>Advance</span>
                               <ChevronRight className="w-3 h-3" />
@@ -286,7 +318,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                           )}
                           <button
                             onClick={() => setSelectedProofTask(task)}
-                            className="text-[10px] text-slate-400 hover:text-slate-600"
+                            className="text-[10px] text-slate-400 hover:text-slate-600 font-bold"
                           >
                             Details
                           </button>
@@ -308,17 +340,17 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
       {/* TAB 2: Safety Gatekeepers Alert Board */}
       {activeTab === 'safety_gatekeepers' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-rose-100 text-rose-700 rounded-2xl">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-black text-slate-900">
                 Preschool Safety Gatekeeper Audit Board
               </h3>
               <p className="text-xs text-slate-500">
-                Mandatory early-childhood safety protocols. All items must have verified photographic proof before children enter campus.
+                Mandatory early-childhood safety protocols. All items require verified photographic proof.
               </p>
             </div>
           </div>
@@ -329,7 +361,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                 1. Window Grills &amp; Fall Protection
               </span>
               <p className="text-xs text-rose-800">
-                No window gap can exceed 100mm (10cm). Low balconies must have 150kg tested safety netting.
+                Window gaps strictly &lt;10cm. Balcony perimeter anchored with 150kg tested nylon safety netting.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-bold">
                 <span>Status:</span>
@@ -342,7 +374,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                 2. Fire NOC &amp; Suppression
               </span>
               <p className="text-xs text-amber-800">
-                4kg ABC fire extinguishers mounted at 1.2m. Heat sensor alarms installed in nap lounge and kitchen.
+                4kg ABC fire extinguishers mounted at 1.2m height. Heat sensors active in kitchen and nap room.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-bold">
                 <span>Status:</span>
@@ -355,7 +387,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                 3. Anti-Microbial EVA Flooring
               </span>
               <p className="text-xs text-emerald-800">
-                25mm high-density tiles with EN71-3 heavy metal free certificate and beveled ramp door transitions.
+                25mm high-density tiles with EN71-3 non-toxicity certification and beveled ramp door transitions.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-bold">
                 <span>Status:</span>
@@ -371,7 +403,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
             </h4>
             <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden">
               {criticalSafetyTasks.map((t) => (
-                <div key={t.id} className="p-4 flex items-center justify-between gap-4 bg-white hover:bg-slate-50">
+                <div key={t.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white hover:bg-slate-50">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-slate-900">{t.title}</span>
@@ -382,9 +414,9 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                     <p className="text-xs text-slate-500">{t.description}</p>
                   </div>
 
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
                     <span
-                      className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                      className={`text-xs font-black px-2.5 py-1 rounded-lg ${
                         t.status === 'verified'
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-amber-100 text-amber-800'
@@ -408,19 +440,19 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
       {/* TAB 3: Vendors & POs */}
       {activeTab === 'vendors' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-black text-slate-900">
                 Preschool Vendor POs &amp; Safety Compliance
               </h3>
               <p className="text-xs text-slate-500">
-                All early-years purchase orders require non-toxicity and fire-retardant safety checks.
+                Purchase orders require non-toxicity (EN71-3) and fire-retardant safety checks.
               </p>
             </div>
             <button
               onClick={() => onOpenCopilot('vendor_audit')}
-              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-md"
+              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs flex items-center gap-1.5 shadow-md self-start sm:self-auto"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Audit Vendor Quote with Gemini</span>
@@ -445,7 +477,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                   <p className="text-xs text-slate-600">{po.item_details}</p>
                 </div>
 
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
                   <div className="text-right">
                     <span className="text-sm font-black text-slate-900">
                       ₹{po.amount.toLocaleString()}
@@ -458,7 +490,7 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
                   <select
                     value={po.status}
                     onChange={(e) => updateVendorOrderStatus(po.id, e.target.value as any)}
-                    className="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white"
+                    className="text-xs font-bold px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white"
                   >
                     <option value="quote_received">Quote Received</option>
                     <option value="safety_approved">Safety Approved</option>
@@ -472,13 +504,13 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
         </div>
       )}
 
-      {/* TAB 4: Team Shifts & Downstairs Hierarchy */}
+      {/* TAB 4: Team Shifts & Hierarchy */}
       {activeTab === 'team' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-6">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Campus Staff Roster &amp; Shifts</h3>
+            <h3 className="text-lg font-black text-slate-900">Campus Staff Roster &amp; Shifts</h3>
             <p className="text-xs text-slate-500">
-              Downstairs hierarchy delegation view for {currentUser.full_name} ({currentUser.designation}).
+              Downstairs hierarchy delegation for {currentUser.full_name} ({currentUser.designation}).
             </p>
           </div>
 
@@ -500,8 +532,8 @@ export const PrincipalView: React.FC<{ onOpenCopilot: (tab?: string) => void }> 
 
                 <div className="space-y-1 text-xs text-slate-600 pt-2 border-t border-slate-200">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Shift Hours:</span>
-                    <span className="font-semibold text-slate-800">
+                    <span className="text-slate-400">Shift:</span>
+                    <span className="font-bold text-slate-800">
                       {staff.role === 'educator' ? '08:00 AM - 02:00 PM' : '08:30 AM - 05:30 PM'}
                     </span>
                   </div>

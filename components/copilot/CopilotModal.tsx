@@ -37,7 +37,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Tab 1: Parent Reply State
+  // Tab 1: Parent Reply State (pre-filled with authentic preschool inquiry)
   const [parentName, setParentName] = useState('Dr. Ananya Iyer');
   const [childName, setChildName] = useState('Aarav');
   const [childAge, setChildAge] = useState('2.5 years');
@@ -55,10 +55,10 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
   );
 
   // Tab 3: Vendor Safety Audit State
-  const [vendorName, setVendorName] = useState('Apex Rubber & Foam Mats');
+  const [vendorName, setVendorName] = useState('SafePlay India Mats Pvt Ltd');
   const [category, setCategory] = useState('EVA Foam Flooring');
   const [quoteText, setQuoteText] = useState(
-    '1200 sq ft 25mm interlocking foam tiles. Density 40 Shore C. Recycled polymer blend. Standard solvent adhesive recommended for edges.'
+    '1200 sq ft 25mm interlocking foam tiles. Density 45 Shore C. Anti-microbial, heavy metal free per EN71-3. Class A fire retardant.'
   );
 
   // Tab 4: Weekly Progress Digest State
@@ -114,45 +114,48 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300">
+        {/* Grab bar on mobile */}
+        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-2 sm:hidden" />
+
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-black text-slate-900">
+                <h3 className="text-sm sm:text-base font-black text-slate-900">
                   ToddlerHQ Gemini Copilot
                 </h3>
                 <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
-                  gemini-3.8-flash • Non-Agentic Utility
+                  Non-Agentic Utility
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
-                Deterministic context-aware early-childhood operational intelligence invoked on user clicks.
+              <p className="text-[11px] sm:text-xs text-slate-500">
+                Deterministic early-childhood operational intelligence invoked on user clicks.
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="px-6 pt-3 border-b border-slate-200 bg-white flex items-center gap-1 overflow-x-auto">
+        <div className="px-4 sm:px-6 pt-2 border-b border-slate-200 bg-white flex items-center gap-1 overflow-x-auto">
           {[
-            { id: 'parent_reply', label: 'Parent Inquiry Responder', icon: MessageSquare },
-            { id: 'lesson_plan', label: 'Sensory Lesson Planner', icon: BookOpen },
-            { id: 'vendor_audit', label: 'Vendor Safety Audit', icon: ShieldCheck },
-            { id: 'progress_digest', label: 'Weekly Parent Digest', icon: FileText },
-            { id: 'vernacular_sop', label: 'Vernacular SOP Translator', icon: Languages },
+            { id: 'parent_reply', label: 'Parent Responder', icon: MessageSquare },
+            { id: 'lesson_plan', label: 'Sensory Planner', icon: BookOpen },
+            { id: 'vendor_audit', label: 'Safety Audit', icon: ShieldCheck },
+            { id: 'progress_digest', label: 'Weekly Digest', icon: FileText },
+            { id: 'vernacular_sop', label: 'Vernacular SOP', icon: Languages },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -164,7 +167,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                   setActiveTab(tab.id);
                   setResult('');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold border-b-2 whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-black border-b-2 whitespace-nowrap transition-all ${
                   isActive
                     ? 'border-amber-500 text-amber-700'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -180,7 +183,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
         {/* Modal Body: Two columns (Input form on left, Output on right) */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Left: Input Form */}
-          <div className="w-full md:w-1/2 p-6 border-r border-slate-200 overflow-y-auto space-y-4">
+          <div className="w-full md:w-1/2 p-4 sm:p-6 border-r border-slate-200 overflow-y-auto space-y-4">
             {/* TAB 1: Parent Inquiry Reply */}
             {activeTab === 'parent_reply' && (
               <div className="space-y-3">
@@ -197,7 +200,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={parentName}
                       onChange={(e) => setParentName(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                   <div>
@@ -208,7 +211,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={`${childName} (${childAge})`}
                       onChange={(e) => setChildName(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                 </div>
@@ -221,19 +224,19 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     type="text"
                     value={program}
                     onChange={(e) => setProgram(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
-                    Parent Inquiry Text
+                    Parent Inquiry Context
                   </label>
                   <textarea
                     rows={3}
                     value={inquiryText}
                     onChange={(e) => setInquiryText(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-900"
                   />
                 </div>
 
@@ -250,7 +253,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     })
                   }
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-transform active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                   <span>Draft Polite WhatsApp Response</span>
@@ -267,13 +270,13 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
-                    Theme / Concept
+                    Activity Theme
                   </label>
                   <input
                     type="text"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
@@ -286,7 +289,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={ageGroup}
                       onChange={(e) => setAgeGroup(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                   <div>
@@ -297,20 +300,20 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="number"
                       value={durationMinutes}
                       onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
-                    Available Materials &amp; Props
+                    Available Props &amp; Materials
                   </label>
                   <textarea
                     rows={3}
                     value={materials}
                     onChange={(e) => setMaterials(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-900"
                   />
                 </div>
 
@@ -325,7 +328,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     })
                   }
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-transform active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                   <span>Generate 20-Min Lesson Plan</span>
@@ -337,7 +340,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
             {activeTab === 'vendor_audit' && (
               <div className="space-y-3">
                 <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-900 font-medium">
-                  Audits quotes &amp; material specs against non-toxicity (EN71-3, ASTM F963) and fire-retardant safety benchmarks.
+                  Audits quotes against EN71-3 non-toxicity and Class A fire-retardant safety benchmarks.
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -349,7 +352,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={vendorName}
                       onChange={(e) => setVendorName(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                   <div>
@@ -360,20 +363,20 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
-                    Quotation / Item Specs to Audit
+                    Quotation / Specification Text
                   </label>
                   <textarea
                     rows={4}
                     value={quoteText}
                     onChange={(e) => setQuoteText(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-900"
                   />
                 </div>
 
@@ -387,7 +390,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     })
                   }
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-transform active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                   <span>Analyze Vendor Specs &amp; Safety</span>
@@ -399,7 +402,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
             {activeTab === 'progress_digest' && (
               <div className="space-y-3">
                 <div className="p-3 bg-rose-50 rounded-xl border border-rose-200 text-xs text-rose-900 font-medium">
-                  Compiles a warm, encouraging 4-line weekly WhatsApp digest for parents based on daily care logs.
+                  Compiles a warm 4-line weekly WhatsApp digest for parents based on daily care logs.
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -411,7 +414,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={selectedStudentName}
                       onChange={(e) => setSelectedStudentName(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                   <div>
@@ -422,7 +425,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={studentGrade}
                       onChange={(e) => setStudentGrade(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                 </div>
@@ -435,7 +438,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     type="text"
                     value={mealSummary}
                     onChange={(e) => setMealSummary(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
@@ -447,7 +450,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     type="text"
                     value={napSummary}
                     onChange={(e) => setNapSummary(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
@@ -459,7 +462,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     type="text"
                     value={moodSummary}
                     onChange={(e) => setMoodSummary(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
@@ -471,7 +474,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     type="text"
                     value={milestones}
                     onChange={(e) => setMilestones(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                   />
                 </div>
 
@@ -488,7 +491,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     })
                   }
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-transform active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                   <span>Draft 4-Line Parent Summary</span>
@@ -500,7 +503,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
             {activeTab === 'vernacular_sop' && (
               <div className="space-y-3">
                 <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900 font-medium">
-                  Translates English hygiene &amp; emergency protocols into Hindi, Marathi, Kannada, Tamil, or Telugu for campus support ayahs.
+                  Translates English protocols into Hindi, Marathi, Kannada, Tamil, or Telugu for campus ayahs and support staff.
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -512,7 +515,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                       type="text"
                       value={sopTitle}
                       onChange={(e) => setSopTitle(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
                     />
                   </div>
                   <div>
@@ -522,7 +525,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     <select
                       value={targetLanguage}
                       onChange={(e) => setTargetLanguage(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-white"
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white"
                     >
                       <option value="Hindi">Hindi (हिंदी)</option>
                       <option value="Kannada">Kannada (ಕನ್ನಡ)</option>
@@ -541,7 +544,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     rows={4}
                     value={englishText}
                     onChange={(e) => setEnglishText(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-900"
                   />
                 </div>
 
@@ -554,7 +557,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                     })
                   }
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-transform active:scale-95 disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Languages className="w-4 h-4" />}
                   <span>Translate SOP for Ayahs &amp; Support</span>
@@ -564,7 +567,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
           </div>
 
           {/* Right: Output / Results Area */}
-          <div className="w-full md:w-1/2 p-6 bg-slate-50 flex flex-col h-full overflow-y-auto">
+          <div className="w-full md:w-1/2 p-4 sm:p-6 bg-slate-50 flex flex-col h-full overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -574,7 +577,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
               {result && (
                 <button
                   onClick={handleCopy}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-1 shadow-2xs"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 flex items-center gap-1 shadow-2xs"
                 >
                   {copied ? (
                     <>
@@ -584,18 +587,18 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Copy Result</span>
+                      <span>Copy</span>
                     </>
                   )}
                 </button>
               )}
             </div>
 
-            <div className="flex-1 pt-4">
+            <div className="flex-1 pt-3">
               {loading && (
-                <div className="h-64 flex flex-col items-center justify-center text-slate-400 space-y-3">
+                <div className="h-48 sm:h-64 flex flex-col items-center justify-center text-slate-400 space-y-3">
                   <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-                  <p className="text-xs font-semibold">Gemini 3.8 Flash generating structured insight...</p>
+                  <p className="text-xs font-bold">Gemini generating structured insight...</p>
                 </div>
               )}
 
@@ -610,11 +613,11 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
               )}
 
               {!loading && !errorMsg && !result && (
-                <div className="h-64 flex flex-col items-center justify-center text-slate-400 text-center p-6 space-y-2">
+                <div className="h-48 sm:h-64 flex flex-col items-center justify-center text-slate-400 text-center p-4 space-y-2">
                   <Sparkles className="w-8 h-8 text-slate-300" />
                   <h4 className="text-xs font-bold text-slate-600">No output generated yet</h4>
                   <p className="text-[11px] text-slate-400 max-w-xs">
-                    Fill the form parameters on the left and click the trigger button to invoke the deterministic Gemini Copilot.
+                    Click the trigger button on the left to invoke the deterministic Gemini Copilot.
                   </p>
                 </div>
               )}
