@@ -2,22 +2,30 @@ import { StaffRole, StaffUser } from '@/types/toddlerhq';
 
 export const ROLE_HIERARCHY_RANK: Record<StaffRole, number> = {
   founder: 1,
+  franchise_hq: 1,
+  mentor: 2,
   center_head: 2,
   academic_lead: 3,
-  admissions_counselor: 4,
   accountant: 4,
+  admissions_counselor: 4,
   educator: 5,
+  didi: 6,
   support_staff: 6,
+  parent: 7,
 };
 
 export const ROLE_LABELS: Record<StaffRole, string> = {
-  founder: 'Founder & Managing Trustee',
+  founder: 'School Founder & Owner',
+  franchise_hq: 'Franchise Head Office & Brand Auditor',
   center_head: 'Center Head / Principal',
   academic_lead: 'Academic Curriculum Lead',
-  educator: 'Classroom Educator',
-  admissions_counselor: 'Admissions & Front Desk Lead',
-  accountant: 'Finance & Compliance Officer',
-  support_staff: 'Daycare Ayah / Campus Support',
+  educator: 'Classroom Teacher (Educator)',
+  didi: 'Daycare Didi (Caregiver / Helper)',
+  support_staff: 'Campus Security & Support',
+  accountant: 'Accountant & Finance Admin',
+  admissions_counselor: 'Admissions & Front Desk Counselor',
+  mentor: 'Pedagogy & Business Mentor',
+  parent: 'Parent & Guardian Portal',
 };
 
 export interface DelegableStaffGroups {
@@ -28,15 +36,14 @@ export interface DelegableStaffGroups {
 
 /**
  * Checks whether assigner has permission to delegate to target user.
- * Founder can assign to anyone.
- * Other roles can only assign to equal or subordinate roles in the tree, or direct reports.
+ * Founder and Franchise HQ can assign to anyone.
  */
 export function canDelegateTo(
   assigner: StaffUser,
   target: StaffUser
 ): boolean {
   if (assigner.id === target.id) return true;
-  if (assigner.role === 'founder') return true;
+  if (assigner.role === 'founder' || assigner.role === 'franchise_hq') return true;
 
   const assignerRank = ROLE_HIERARCHY_RANK[assigner.role] || 99;
   const targetRank = ROLE_HIERARCHY_RANK[target.role] || 99;
@@ -44,17 +51,16 @@ export function canDelegateTo(
   // Direct reporting relationship always allowed if downwards or peer
   if (target.reports_to_id === assigner.id) return true;
 
-  // Downstairs rule: target must be lower in hierarchy rank (larger rank number)
+  // Downstairs rule: target must be lower in hierarchy rank
   if (targetRank > assignerRank) {
-    // Specific operational constraints:
     if (assigner.role === 'academic_lead') {
-      return target.role === 'educator';
+      return target.role === 'educator' || target.role === 'didi';
     }
     if (assigner.role === 'admissions_counselor') {
-      return false; // only to self
+      return false;
     }
-    if (assigner.role === 'educator' || assigner.role === 'support_staff') {
-      return false; // only to self
+    if (assigner.role === 'educator' || assigner.role === 'didi' || assigner.role === 'support_staff') {
+      return false;
     }
     return true;
   }
@@ -62,9 +68,6 @@ export function canDelegateTo(
   return false;
 }
 
-/**
- * Returns grouped list of staff members that the currentUser is allowed to assign tasks to.
- */
 export function getDelegableStaffGroups(
   currentUser: StaffUser,
   allStaff: StaffUser[]
@@ -85,17 +88,13 @@ export function getDelegableStaffGroups(
   };
 }
 
-/**
- * State Machine Transition Validator
- * backlog -> todo -> in_progress -> under_review -> completed -> verified
- */
 export const ALLOWED_STATUS_TRANSITIONS: Record<string, string[]> = {
   backlog: ['todo'],
   todo: ['in_progress', 'backlog'],
   in_progress: ['under_review', 'todo'],
-  under_review: ['completed', 'in_progress'], // in_progress if rejected/needs rework
+  under_review: ['completed', 'in_progress'],
   completed: ['verified', 'in_progress'],
-  verified: [], // Terminal verified state
+  verified: [],
 };
 
 export function canTransitionTaskStatus(
@@ -115,7 +114,6 @@ export function canTransitionTaskStatus(
     };
   }
 
-  // Check proof requirement when transitioning to under_review or completed
   if (
     requiresProof &&
     (targetStatus === 'under_review' || targetStatus === 'completed' || targetStatus === 'verified') &&
@@ -127,12 +125,11 @@ export function canTransitionTaskStatus(
     };
   }
 
-  // Only Leadership can verify & close or complete
   if (targetStatus === 'verified') {
-    if (!['founder', 'center_head', 'academic_lead'].includes(user.role)) {
+    if (!['founder', 'franchise_hq', 'center_head', 'academic_lead'].includes(user.role)) {
       return {
         allowed: false,
-        reason: 'Authority restriction: Only Founder, Center Head, or Academic Lead can verify and close tasks.',
+        reason: 'Authority restriction: Only Founder, Franchise HQ, Center Head, or Academic Lead can verify and close tasks.',
       };
     }
   }

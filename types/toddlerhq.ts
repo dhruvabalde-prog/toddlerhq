@@ -1,13 +1,66 @@
 export type OperationalMode = 'setup' | 'operations';
 
+export type AppNavTab =
+  | 'onboarding'
+  | 'management'
+  | 'setup_running'
+  | 'stakeholders'
+  | 'data_hub';
+
 export type StaffRole =
   | 'founder'
+  | 'franchise_hq'
   | 'center_head'
   | 'academic_lead'
   | 'educator'
+  | 'didi'
+  | 'support_staff'
   | 'admissions_counselor'
   | 'accountant'
-  | 'support_staff';
+  | 'mentor'
+  | 'parent';
+
+export type GoogleNativeAssetType =
+  | 'sheet'
+  | 'doc'
+  | 'slide'
+  | 'form'
+  | 'drive_folder'
+  | 'chat_space'
+  | 'meet_link';
+
+export interface GoogleNativeAsset {
+  id: string;
+  title: string;
+  description: string;
+  type: GoogleNativeAssetType;
+  department: Department | 'Management' | 'Hygiene_Support';
+  nativeUrl: string;
+  iconName: string;
+  recommendedRoles: StaffRole[];
+  lastUpdated: string;
+  rowCountOrSections?: string;
+  sampleColumnsOrOutline: string[];
+}
+
+export interface CampusSetupInput {
+  brand_id: string;
+  school_type: 'franchise' | 'independent';
+  campus_name: string;
+  trust_name: string;
+  registration_type: 'Trust' | 'Society' | 'Section 8' | 'LLP' | 'Pvt Ltd';
+  city: string;
+  locality: string;
+  pincode: string;
+  total_sqft: number;
+  outdoor_play_sqft: number;
+  classroom_count: number;
+  daycare_offered: boolean;
+  cctv_cloud_enabled: boolean;
+  franchise_poc_name?: string;
+  franchise_poc_email?: string;
+  mentors: { name: string; email: string; organization: string }[];
+}
 
 export interface StaffUser {
   id: string;
@@ -165,4 +218,98 @@ export interface GoogleWorkspaceState {
   activeChatSpaces: { id: string; name: string; memberCount: number; unreadAlerts: number }[];
   gmailDispatchesCount: number;
   driveFolderTree: string;
+}
+
+// -------------------------------------------------------------
+// Extended Types for Complete Preschool OS
+// -------------------------------------------------------------
+
+export type StakeholderType =
+  | 'parent'
+  | 'student'
+  | 'franchise'
+  | 'team'
+  | 'teacher'
+  | 'didi'
+  | 'mentor'
+  | 'vendor'
+  | 'lead';
+
+export interface Stakeholder {
+  id: string;
+  name: string;
+  type: StakeholderType;
+  phone: string;
+  email: string;
+  google_email?: string;
+  roleTitle: string;
+  relationDetails?: string; // e.g. "Father of Aarav (Nursery)" or "Regional Franchise Auditor"
+  feeStatus?: 'paid' | 'due' | 'not_applicable';
+  dueAmount?: number;
+  grade?: ProgramGrade;
+  preferredChannel: 'whatsapp' | 'call' | 'gmail' | 'chat';
+  lastContactedAt?: string;
+  notes?: string;
+  tags: string[];
+  avatarUrl?: string;
+}
+
+export interface CommunicationLog {
+  id: string;
+  stakeholderId: string;
+  stakeholderName: string;
+  channel: 'whatsapp' | 'call' | 'gmail' | 'chat';
+  message: string;
+  draftedBy: string;
+  sentAt: string;
+  status: 'sent' | 'drafted' | 'delivered';
+}
+
+export interface WhatsAppTemplate {
+  id: string;
+  title: string;
+  category: 'fees' | 'care' | 'admissions' | 'franchise' | 'staff' | 'emergency';
+  targetRole: StakeholderType;
+  textTemplate: string;
+}
+
+export interface SchoolConfig {
+  brandId: string;
+  brandName: string;
+  campusName: string;
+  city: string;
+  locality: string;
+  pincode: string;
+  state: string;
+  totalCapacity: number;
+  operatingHours: string;
+  gradesOffered: ProgramGrade[];
+  feesMonthly: Record<ProgramGrade, number>;
+  mealsProvision: 'in_house_kitchen' | 'catered_organic' | 'parent_lunchbox';
+  transportProvision: 'school_vans_gps' | 'auto_rickshaw_pool' | 'parent_drop_only';
+  emergencyContact: string;
+  cctvEnabled: boolean;
+  fireNocStatus: 'approved' | 'in_review' | 'pending';
+}
+
+export type AIPermissionLevel = 'disabled' | 'read' | 'suggest' | 'auto_sync';
+
+export interface ToolPermission {
+  tool: 'docs' | 'sheets' | 'slides' | 'forms' | 'notebooklm' | 'classroom' | 'maps' | 'keep';
+  title: string;
+  description: string;
+  level: AIPermissionLevel;
+  autoDraft: boolean;
+  lastSync: string;
+}
+
+export interface GoogleAuthSession {
+  connected: boolean;
+  email: string;
+  name: string;
+  avatarUrl: string;
+  connectedAt: string;
+  provider: 'google';
+  secondaryGmail?: string;
+  contactsCount: number;
 }

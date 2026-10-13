@@ -25,7 +25,7 @@ interface WorkspaceDrawerProps {
 
 export const WorkspaceDrawer: React.FC<WorkspaceDrawerProps> = ({ isOpen, onClose }) => {
   const {
-    googleConnected,
+    googleAuth,
     campus,
     brand,
     students,

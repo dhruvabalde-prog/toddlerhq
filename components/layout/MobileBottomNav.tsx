@@ -10,11 +10,12 @@ import {
   Sparkles,
   Users,
   Building2,
-  MapPin,
   HardDrive,
   X,
   Check,
-  ShieldCheck,
+  Table,
+  MessageCircle,
+  LogOut,
 } from 'lucide-react';
 
 interface MobileBottomNavProps {
@@ -22,6 +23,8 @@ interface MobileBottomNavProps {
   onOpenWorkspace: () => void;
   onOpenLocation: () => void;
   onOpenBrands: () => void;
+  onOpenSetupWizard?: () => void;
+  onOpenWorkspaceHub?: () => void;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
@@ -29,26 +32,33 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   onOpenWorkspace,
   onOpenLocation,
   onOpenBrands,
+  onOpenSetupWizard,
+  onOpenWorkspaceHub,
 }) => {
   const {
-    mode,
-    toggleMode,
+    activeTab,
+    setActiveTab,
     currentUser,
     setCurrentUserRole,
     staffList,
     brand,
     campus,
+    disconnectGoogle,
   } = useToddlerHQ();
 
   const [isRoleSheetOpen, setIsRoleSheetOpen] = useState(false);
 
   const roles: StaffRole[] = [
     'founder',
+    'franchise_hq',
     'center_head',
     'academic_lead',
     'educator',
+    'didi',
     'admissions_counselor',
-    'support_staff',
+    'accountant',
+    'mentor',
+    'parent',
   ];
 
   return (
@@ -56,50 +66,48 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       {/* Fixed Mobile Bottom Thumb Bar (Only on mobile/small screens) */}
       <nav className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-xl md:hidden pb-safe">
         <div className="grid grid-cols-5 h-16 items-center px-1">
-          {/* 1. Mode Toggle */}
+          {/* 1. Founder Setup / Input Tab */}
           <button
-            onClick={toggleMode}
-            className="flex flex-col items-center justify-center py-1 text-slate-700 active:scale-95 transition-transform"
-            title="Toggle Setup vs Operations Mode"
+            onClick={() => setActiveTab('onboarding')}
+            className={`flex flex-col items-center justify-center py-1 transition-transform active:scale-95 ${
+              activeTab === 'onboarding' ? 'text-indigo-600' : 'text-slate-600'
+            }`}
           >
             <div
               className={`w-9 h-7 rounded-xl flex items-center justify-center text-xs font-bold transition-colors ${
-                mode === 'setup'
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-emerald-600 text-white'
+                activeTab === 'onboarding'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-100 text-slate-700'
               }`}
             >
-              {mode === 'setup' ? (
-                <Wrench className="w-4 h-4" />
-              ) : (
-                <GraduationCap className="w-4 h-4" />
-              )}
+              ⚙️
             </div>
-            <span className="text-[10px] font-extrabold mt-1 text-slate-800 uppercase">
-              {mode === 'setup' ? 'Setup' : 'Ops'}
-            </span>
+            <span className="text-[10px] font-extrabold mt-1 uppercase">Setup</span>
           </button>
 
-          {/* 2. Top 25 Brands */}
+          {/* 2. School Management Tab */}
           <button
-            onClick={onOpenBrands}
-            className="flex flex-col items-center justify-center py-1 text-slate-700 active:scale-95 transition-transform"
+            onClick={() => setActiveTab('management')}
+            className={`flex flex-col items-center justify-center py-1 transition-transform active:scale-95 ${
+              activeTab === 'management' ? 'text-indigo-600' : 'text-slate-600'
+            }`}
           >
             <div
-              className="w-9 h-7 rounded-xl flex items-center justify-center text-[11px] font-black text-white shadow-2xs"
-              style={{ backgroundColor: brand.primaryColor }}
+              className={`w-9 h-7 rounded-xl flex items-center justify-center text-xs font-bold transition-colors ${
+                activeTab === 'management'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-100 text-slate-700'
+              }`}
             >
-              {brand.id === 'independent' ? 'IND' : brand.name.slice(0, 2).toUpperCase()}
+              🏫
             </div>
-            <span className="text-[10px] font-bold mt-1 text-slate-800 truncate max-w-[55px]">
-              Brands
-            </span>
+            <span className="text-[10px] font-bold mt-1">School</span>
           </button>
 
           {/* 3. Center Copilot AI Action Trigger */}
           <button
             onClick={() => onOpenCopilot()}
-            className="flex flex-col items-center justify-center py-1 -mt-4 active:scale-90 transition-transform"
+            className="flex flex-col items-center justify-center py-1 -mt-4 active:scale-90 transition-transform cursor-pointer"
           >
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-lg flex items-center justify-center ring-4 ring-white">
               <Sparkles className="w-6 h-6 animate-pulse" />
@@ -107,18 +115,26 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             <span className="text-[10px] font-black mt-1 text-amber-700">Copilot</span>
           </button>
 
-          {/* 4. Google Workspace Ecosystem */}
+          {/* 4. Stakeholder WhatsApp CRM Tab */}
           <button
-            onClick={onOpenWorkspace}
-            className="flex flex-col items-center justify-center py-1 text-slate-700 active:scale-95 transition-transform"
+            onClick={() => setActiveTab('stakeholders')}
+            className={`flex flex-col items-center justify-center py-1 transition-transform active:scale-95 ${
+              activeTab === 'stakeholders' ? 'text-emerald-600' : 'text-slate-600'
+            }`}
           >
-            <div className="w-9 h-7 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
-              <HardDrive className="w-4 h-4" />
+            <div
+              className={`w-9 h-7 rounded-xl flex items-center justify-center text-xs font-bold transition-colors ${
+                activeTab === 'stakeholders'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-emerald-50 text-emerald-700'
+              }`}
+            >
+              <MessageCircle className="w-4 h-4 fill-current" />
             </div>
-            <span className="text-[10px] font-bold mt-1 text-slate-800">Workspace</span>
+            <span className="text-[10px] font-bold mt-1 text-slate-800">WhatsApp</span>
           </button>
 
-          {/* 5. Role Switcher */}
+          {/* 5. Role Switcher & Menu */}
           <button
             onClick={() => setIsRoleSheetOpen(true)}
             className="flex flex-col items-center justify-center py-1 text-slate-700 active:scale-95 transition-transform"
@@ -157,6 +173,30 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               </button>
             </div>
 
+            {/* Quick Links to Other Tabs */}
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold pt-1">
+              <button
+                onClick={() => {
+                  setActiveTab('setup_running');
+                  setIsRoleSheetOpen(false);
+                }}
+                className="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 flex items-center gap-2"
+              >
+                <span>🏗️</span>
+                <span>Setup vs Running</span>
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('data_hub');
+                  setIsRoleSheetOpen(false);
+                }}
+                className="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 flex items-center gap-2"
+              >
+                <span>📊</span>
+                <span>Data Hub &amp; Sheets</span>
+              </button>
+            </div>
+
             <div className="space-y-1.5 pt-1">
               {roles.map((r) => {
                 const isCurrent = currentUser.role === r;
@@ -180,7 +220,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                         {ROLE_LABELS[r]}
                       </span>
                       <span className="text-[11px] text-slate-500">
-                        {staffMember?.full_name} ({staffMember?.department || 'Operations'})
+                        {staffMember?.full_name || `${r.toUpperCase()} Profile`}
                       </span>
                     </div>
 
@@ -192,6 +232,20 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   </button>
                 );
               })}
+            </div>
+
+            {/* Disconnect Google Action in Bottom Sheet */}
+            <div className="pt-2 border-t border-slate-100">
+              <button
+                onClick={() => {
+                  disconnectGoogle();
+                  setIsRoleSheetOpen(false);
+                }}
+                className="w-full py-2.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-bold flex items-center justify-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Disconnect Google Workspace</span>
+              </button>
             </div>
           </div>
         </div>
